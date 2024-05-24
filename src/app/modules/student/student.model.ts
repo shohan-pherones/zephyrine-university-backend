@@ -82,6 +82,12 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       required: [true, 'Student ID is required'],
       unique: true,
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      ref: 'User',
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -139,11 +145,6 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
-    isActive: {
-      type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -191,10 +192,10 @@ studentSchema.pre('aggregate', function (next) {
 });
 
 studentSchema.statics.isStudentExist = async function (id: string) {
-  const existingStudent = await StudentModel.findOne({ id });
+  const existingStudent = await Student.findOne({ id });
   return existingStudent;
 };
 
-const StudentModel = model<TStudent, TStudentModel>('Student', studentSchema);
+const Student = model<TStudent, TStudentModel>('Student', studentSchema);
 
-export default StudentModel;
+export default Student;
