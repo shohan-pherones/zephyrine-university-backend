@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.status(200).json({ message: 'Welcome to the server!' });
 });
 
 app.use('/api/v1/students', StudentRoutes);

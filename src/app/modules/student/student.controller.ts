@@ -22,6 +22,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 const getSingleStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
+
     const result = await StudentServices.getSingleStudentFromDb(studentId);
 
     res.status(200).json({
@@ -41,6 +42,7 @@ const getSingleStudent = async (req: Request, res: Response) => {
 const deleteStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
+
     const result = await StudentServices.deleteStudentFromDb(studentId);
 
     res.status(200).json({
