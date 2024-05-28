@@ -155,10 +155,6 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
   },
 );
 
-studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName} `;
-});
-
 studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
@@ -166,11 +162,6 @@ studentSchema.pre('find', function (next) {
 
 studentSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
-  next();
-});
-
-studentSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 
