@@ -6,10 +6,12 @@ import { AcademicDepartmentValidations } from './academicDepartment.validation';
 const router: Router = express.Router();
 
 router.get('/', AcademicDepartmentControllers.getAcademicDepartments);
+
 router.get(
   '/:departmentId',
   AcademicDepartmentControllers.getAcademicDepartment,
 );
+
 router.patch(
   '/:departmentId',
   validateRequest(
@@ -17,6 +19,7 @@ router.patch(
   ),
   AcademicDepartmentControllers.updateAcademicDepartment,
 );
+
 router.post(
   '/create-academic-department',
   validateRequest(

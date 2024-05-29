@@ -1,12 +1,12 @@
-import mongoose, { Schema, model } from 'mongoose';
+import httpStatus from 'http-status';
+import { Schema, model } from 'mongoose';
+import AppError from '../../errors/AppError';
 import {
   academicSemesterCodes,
   academicSemeterNames,
   months,
 } from './academicSemester.constant';
 import { TAcademicSemester } from './academicSemester.interface';
-import AppError from '../../errors/AppError';
-import httpStatus from 'http-status';
 
 const academicSemesterSchema = new Schema<TAcademicSemester>(
   {

@@ -6,7 +6,9 @@ import { AcademicFacultyValidations } from './academicFaculty.validation';
 const router: Router = express.Router();
 
 router.get('/', AcademicFacultyControllers.getAcademicFaculties);
+
 router.get('/:facultyId', AcademicFacultyControllers.getAcademicFaculty);
+
 router.patch(
   '/:facultyId',
   validateRequest(
@@ -14,6 +16,7 @@ router.patch(
   ),
   AcademicFacultyControllers.updateAcademicFaculty,
 );
+
 router.post(
   '/create-academic-faculty',
   validateRequest(
