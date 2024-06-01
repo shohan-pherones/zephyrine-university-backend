@@ -1,12 +1,21 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import User from '../user/user.model';
+import { studentSearchableFields } from './student.constant';
 import { TStudent } from './student.interface';
 import Student from './student.model';
 
-const getAllStudentsFromDb = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
+  const studentQuery = new QueryBuilder(Student.find(), query)
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await studentQuery.modelQuery
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -14,6 +23,7 @@ const getAllStudentsFromDb = async () => {
         path: 'academicFaculty',
       },
     });
+
   return result;
 };
 
@@ -69,9 +79,9 @@ const deleteStudentFromDb = async (id: string) => {
     await session.commitTransaction();
 
     return deletedStudent;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
-    throw new Error('Failed to delete student');
+    throw new Error(error.message);
   } finally {
     await session.endSession();
   }
