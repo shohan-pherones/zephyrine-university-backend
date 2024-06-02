@@ -4,13 +4,18 @@ import config from '../../config';
 import AppError from '../../errors/AppError';
 import AcademicDepartment from '../academicDepartment/academicDepartment.model';
 import AcademicSemester from '../academicSemester/academicSemester.model';
+import Admin from '../admin/admin.model';
 import { TFaculty } from '../faculty/faculty.interface';
 import Faculty from '../faculty/faculty.model';
 import { TStudent } from '../student/student.interface';
 import Student from '../student/student.model';
 import { TUser } from './user.interface';
 import User from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
   // create an empty user data object
@@ -126,7 +131,48 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
+const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+  const userData: Partial<TUser> = {};
+
+  userData.password = password || (config.default_pass as string);
+
+  userData.role = 'admin';
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    userData.id = await generateAdminId();
+
+    const newUser = await User.create([userData], { session });
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id;
+
+    const newAdmin = await Admin.create([payload], { session });
+
+    if (!newAdmin.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newAdmin;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+
 export const UserServices = {
   createStudentIntoDb,
   createFacultyIntoDB,
+  createAdminIntoDB,
 };

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
-import { BloodGroup, Gender } from './faculty.constant';
-import { TFaculty, TFacultyModel, TUserName } from './faculty.interface';
+import { BloodGroup, Gender } from './admin.constant';
+import { TAdmin, TAdminModel, TUserName } from './admin.interface';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -21,7 +21,7 @@ const userNameSchema = new Schema<TUserName>({
   },
 });
 
-const facultySchema = new Schema<TFaculty, TFacultyModel>(
+const adminSchema = new Schema<TAdmin, TAdminModel>(
   {
     id: {
       type: String,
@@ -77,11 +77,6 @@ const facultySchema = new Schema<TFaculty, TFacultyModel>(
       required: [true, 'Permanent address is required'],
     },
     profileImg: { type: String },
-    academicDepartment: {
-      type: Schema.Types.ObjectId,
-      required: [true, 'User id is required'],
-      ref: 'User',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -94,25 +89,25 @@ const facultySchema = new Schema<TFaculty, TFacultyModel>(
   },
 );
 
-facultySchema.virtual('fullName').get(function () {
+adminSchema.virtual('fullName').get(function () {
   return this?.name?.firstName + ' ' + this?.name?.lastName;
 });
 
-facultySchema.pre('find', function (next) {
+adminSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-facultySchema.pre('findOne', function (next) {
+adminSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-facultySchema.statics.isUserExists = async function (id: string) {
-  const existingUser = await Faculty.findOne({ id });
+adminSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Admin.findOne({ id });
   return existingUser;
 };
 
-const Faculty = model<TFaculty, TFacultyModel>('Faculty', facultySchema);
+const Admin = model<TAdmin, TAdminModel>('Admin', adminSchema);
 
-export default Faculty;
+export default Admin;
