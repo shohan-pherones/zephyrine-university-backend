@@ -6,6 +6,7 @@ import { TUser, TUserModel } from './user.interface';
 const userSchema = new mongoose.Schema<TUser, TUserModel>(
   {
     id: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     role: { type: String, enum: ['admin', 'student', 'faculty'] },
