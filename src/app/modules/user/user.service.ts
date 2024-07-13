@@ -16,7 +16,6 @@ import {
   generateFacultyId,
   generateStudentId,
 } from './user.utils';
-import { verifyToken } from '../auth/auth.utils';
 
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
   // create an empty user data object
